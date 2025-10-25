@@ -4,7 +4,7 @@ Account Service
 This microservice handles the lifecycle of Accounts
 """
 # pylint: disable=unused-import
-from flask import jsonify, request, make_response, abort, url_for   # noqa: F401
+from flask import jsonify, request, make_response, abort, url_for  # noqa: F401
 from service.models import Account
 from service.common import status  # HTTP Status Codes
 from . import app  # Import Flask application
@@ -80,6 +80,7 @@ def list_accounts():
     app.logger.debug("Returning %d accounts", len(results))
     return jsonify(results), status.HTTP_200_OK
 
+
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
@@ -119,7 +120,6 @@ def update_accounts(account_id):
     account.update()
 
     return jsonify(account.serialize()), status.HTTP_200_OK
-
 
 
 ######################################################################

@@ -59,17 +59,26 @@ def create_accounts():
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
-# @app.route("/accounts", methods=["GET"])
-# def list_accounts():
-#     """
-#     List all Accounts
-#     This endpoint will return all Accounts in the database
-#     """
-#     app.logger.info("Request to list Accounts")
-#     accounts = Account.all()
-#     results = [account.serialize() for account in accounts]
-#     return jsonify(results), status.HTTP_200_OK
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    """
+    List all Accounts
+    This endpoint will return all Accounts in the database
+    """
+    app.logger.info("Request to list Accounts")
 
+    # Fetch all accounts from database
+    accounts = Account.all()
+
+    # If no accounts, return empty list (still HTTP 200)
+    if not accounts:
+        app.logger.info("No accounts found in database.")
+        return jsonify([]), status.HTTP_200_OK
+
+    # Serialize accounts for response
+    results = [account.serialize() for account in accounts]
+    app.logger.debug("Returning %d accounts", len(results))
+    return jsonify(results), status.HTTP_200_OK
 
 ######################################################################
 # READ AN ACCOUNT

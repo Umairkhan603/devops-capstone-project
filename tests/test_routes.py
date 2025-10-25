@@ -124,3 +124,56 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+    def test_read_an_account(self):
+        """It should Read a single Account"""
+        # Create one account
+        account = self._create_accounts(1)[0]
+
+        # Send GET request to retrieve it
+        resp = self.client.get(f"{BASE_URL}/{account.id}")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        self.assertEqual(data["name"], account.name)
+        self.assertEqual(data["email"], account.email)
+        self.assertEqual(data["address"], account.address)
+        self.assertIn("id", data)
+
+
+    def test_read_account_not_found(self):
+        """It should return 404 if the account does not exist"""
+        resp = self.client.get(f"{BASE_URL}/9999")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+        data = resp.get_json()
+        self.assertIn("not found", data["message"].lower())
+    
+    def test_read_account_logs_and_response_fields(self):
+        """It should log and return all expected fields for a valid account"""
+        account = self._create_accounts(1)[0]
+        resp = self.client.get(f"{BASE_URL}/{account.id}")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        # Check all fields exist and are correct
+        self.assertIn("id", data)
+        self.assertIn("name", data)
+        self.assertIn("email", data)
+        self.assertIn("address", data)
+        self.assertEqual(data["id"], account.id)
+        self.assertEqual(data["name"], account.name)
+
+    def test_create_account_with_invalid_content_type(self):
+        """It should return 415 when Content-Type is not application/json"""
+        resp = self.client.post(
+            BASE_URL,
+            json={"name": "Invalid User", "email": "invalid@example.com"},
+            headers={"Content-Type": "text/plain"}
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_list_accounts_returns_empty_list(self):
+        """It should return an empty list when no accounts exist"""
+        resp = self.client.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data, [])

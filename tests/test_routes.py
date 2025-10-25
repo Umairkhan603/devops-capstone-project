@@ -177,3 +177,20 @@ class TestAccountService(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(data, [])
+
+    def test_list_multiple_accounts(self):
+        """It should List multiple accounts"""
+        # Create multiple accounts
+        self._create_accounts(3)
+
+        # Send GET request to list all
+        resp = self.client.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        self.assertIsInstance(data, list)
+        self.assertEqual(len(data), 3)
+        self.assertIn("name", data[0])
+        self.assertIn("email", data[0])
+        self.assertIn("address", data[0])
+        self.assertIn("id", data[0])

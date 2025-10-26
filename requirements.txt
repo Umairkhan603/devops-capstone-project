@@ -1,12 +1,10 @@
 # Pin dependencies that might cause breakage
 Werkzeug==2.1.2
-SQLAlchemy==2.0.25
 
 # Build dependencies
 Flask==2.1.2
-Flask-SQLAlchemy==2.5.1
 psycopg2-binary==2.9.9 --only-binary=:all:
-
+SQLAlchemy==1.4.46
 
 python-dotenv==0.20.0
 
@@ -31,3 +29,5 @@ coverage==6.3.2
 
 # Utilities
 httpie==3.2.1
+Flask-SQLAlchemy==2.5.1
+psycopg2-binary==2.9.7

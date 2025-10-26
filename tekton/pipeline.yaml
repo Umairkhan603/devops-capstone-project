@@ -1,42 +1,29 @@
-#
-# Tekton Pipeline: CD Pipeline with Git Clone and Flake8 Lint
-# Tasks from Tekton Hub:
-#   - git-clone
-#   - flake8
-#
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
-metadata:  
+metadata:
   name: cd-pipeline
 spec:
+  description: This pipeline clones the repo, lints the code, runs tests, and cleans up.
   workspaces:
     - name: pipeline-workspace
   params:
     - name: repo-url
+      type: string
     - name: branch
-      default: main
+      type: string
   tasks:
-    - name: init
-      workspaces:
-        - name: source
-          workspace: pipeline-workspace          
-      taskRef:
-        name: cleanup
-
     - name: clone
-      workspaces:
-        - name: output
-          workspace: pipeline-workspace          
       taskRef:
         name: git-clone
+      workspaces:
+        - name: output
+          workspace: pipeline-workspace
       params:
         - name: url
           value: $(params.repo-url)
         - name: revision
           value: $(params.branch)
-      runAfter:
-        - init
 
     - name: lint
       workspaces:
@@ -44,10 +31,29 @@ spec:
           workspace: pipeline-workspace
       taskRef:
         name: flake8
-      params:
-        - name: image
-          value: "python:3.9-slim"
-        - name: args
-          value: ["--count","--max-complexity=10","--max-line-length=127","--statistics"]
       runAfter:
         - clone
+
+    - name: tests
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: nose
+      params:
+        - name: database_uri
+          value: "sqlite:///test.db"
+        - name: args
+          value: "-v --with-spec --spec-color"
+      runAfter:
+        - clone
+
+    - name: cleanup
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: cleanup
+      runAfter:
+        - lint
+        - tests

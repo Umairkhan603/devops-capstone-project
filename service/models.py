@@ -1,15 +1,16 @@
 """
 Models for Account
 
-All of the models are stored in this module
+All of the models are stored in this module.
 """
+
 import logging
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger("flask.app")
 
-# Create the SQLAlchemy object to be initialized later
+# Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
 
@@ -22,6 +23,7 @@ def init_db(app):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+        logger.info("Database tables created successfully.")
 
 
 ######################################################################
@@ -30,24 +32,21 @@ def init_db(app):
 class PersistentBase:
     """Base class providing persistent methods."""
 
-    def __init__(self):
-        self.id = None  # pylint: disable=invalid-name
-
     def create(self):
-        """Creates a record in the database."""
-        logger.info("Creating record: %s", getattr(self, "name", "unknown"))
-        self.id = None  # id must be None to generate a new primary key
+        """Creates the record in the database."""
+        logger.info("Creating record: %s", self)
+        self.id = None  # ensure new primary key is generated
         db.session.add(self)
         db.session.commit()
 
     def update(self):
-        """Updates a record in the database."""
-        logger.info("Updating record: %s", getattr(self, "name", "unknown"))
+        """Updates the record in the database."""
+        logger.info("Updating record: %s", self)
         db.session.commit()
 
     def delete(self):
-        """Removes a record from the data store."""
-        logger.info("Deleting record: %s", getattr(self, "name", "unknown"))
+        """Deletes the record from the database."""
+        logger.info("Deleting record: %s", self)
         db.session.delete(self)
         db.session.commit()
 
@@ -60,7 +59,7 @@ class PersistentBase:
     @classmethod
     def find(cls, by_id):
         """Finds a record by its ID."""
-        logger.info("Looking up %s by id=%s", cls.__name__, by_id)
+        logger.info("Looking up %s by ID: %s", cls.__name__, by_id)
         return cls.query.get(by_id)
 
 
@@ -70,16 +69,19 @@ class PersistentBase:
 class Account(db.Model, PersistentBase):
     """Class that represents an Account."""
 
-    __tablename__ = "account"
+    __tablename__ = "accounts"
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False)
     address = db.Column(db.String(256), nullable=False)
-    phone_number = db.Column(db.String(32), nullable=True)  # optional
+    phone_number = db.Column(db.String(32), nullable=True)  # optional field
     date_joined = db.Column(db.Date(), nullable=False, default=date.today)
 
+    ##################################################################
+    #  Instance Methods
+    ##################################################################
     def __repr__(self):
         return f"<Account {self.name} id=[{self.id}]>"
 
@@ -91,7 +93,11 @@ class Account(db.Model, PersistentBase):
             "email": self.email,
             "address": self.address,
             "phone_number": self.phone_number,
-            "date_joined": self.date_joined.isoformat(),
+            "date_joined": (
+                self.date_joined.isoformat()
+                if isinstance(self.date_joined, date)
+                else str(self.date_joined)
+            ),
         }
 
     def deserialize(self, data):
@@ -102,32 +108,40 @@ class Account(db.Model, PersistentBase):
             self.address = data["address"]
             self.phone_number = data.get("phone_number")
             date_joined = data.get("date_joined")
-
             if date_joined:
                 self.date_joined = date.fromisoformat(date_joined)
             else:
                 self.date_joined = date.today()
-
         except KeyError as error:
             raise DataValidationError(
                 f"Invalid Account: missing {error.args[0]}"
             ) from error
         except TypeError as error:
             raise DataValidationError(
-                f"Invalid Account: bad or no data - {error.args[0]}"
+                "Invalid Account: body contained bad or no data - "
+                f"{error.args[0]}"
             ) from error
-
         return self
 
+    ##################################################################
+    #  Class Methods
+    ##################################################################
     @classmethod
     def find_by_name(cls, name):
         """Returns all Accounts with the given name."""
-        logger.info("Querying for accounts with name=%s", name)
-        return cls.query.filter(cls.name == name)
+        logger.info("Querying for account(s) with name: %s", name)
+        return cls.query.filter_by(name=name).all()
 
-    @staticmethod
-    def init_db(app):
-        """Initializes the database with the given Flask app."""
-        db.init_app(app)
-        with app.app_context():
+    @classmethod
+    def find_by_email(cls, email):
+        """Find an Account by email."""
+        logger.info("Querying for account with email: %s", email)
+        return cls.query.filter_by(email=email).first()
+
+    @classmethod
+    def reset_database(cls):
+        """Utility function to reset the database (used in tests)."""
+        with db.session.no_autoflush:
+            db.drop_all()
             db.create_all()
+        logger.info("Database reset complete.")

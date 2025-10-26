@@ -5,7 +5,7 @@
 [clone : clone] + '[' true '=' true ]
 [clone : clone] + cleandir
 [clone : clone] + '[' -d /workspace/output/ ]
-[clone : clone] + rm -rf /workspace/output//Dockerfile /workspace/output//LICENSE /workspace/output//Makefile /workspace/output//Procfile /workspace/output//README.md /workspace/output//bin /workspace/output//deploy /workspace/output//pipelinerun.txt /workspace/output//postgresql-ephemeral-template.json /workspace/output//requirements.txt /workspace/output//service /workspace/output//setup.cfg /workspace/output//tekton /workspace/output//tests
+[clone : clone] + rm -rf /workspace/output//Dockerfile /workspace/output//LICENSE /workspace/output//Makefile /workspace/output//Procfile /workspace/output//README.md /workspace/output//bin /workspace/output//deploy /workspace/output//postgresql-ephemeral-template.json /workspace/output//requirements.txt /workspace/output//service /workspace/output//setup.cfg /workspace/output//tekton /workspace/output//tests
 [clone : clone] rm: can't remove '/workspace/output//service/common/__pycache__/__init__.cpython-39.pyc': Permission denied
 [clone : clone] rm: can't remove '/workspace/output//service/common/__pycache__/log_handlers.cpython-39.pyc': Permission denied
 [clone : clone] rm: can't remove '/workspace/output//service/common/__pycache__/status.cpython-39.pyc': Permission denied
@@ -20,69 +20,30 @@
 [clone : clone] rm: can't remove '/workspace/output//tests/__pycache__/test_models.cpython-39.pyc': Permission denied
 [clone : clone] rm: can't remove '/workspace/output//tests/__pycache__/factories.cpython-39.pyc': Permission denied
 [clone : clone] rm: can't remove '/workspace/output//tests/__pycache__/test_routes.cpython-39.pyc': Permission denied
-[clone : clone] + rm -rf /workspace/output//.devcontainer /workspace/output//.flaskenv /workspace/output//.git /workspace/output//.gitattributes /workspace/output//.github /workspace/output//.gitignore
+[clone : clone] + rm -rf /workspace/output//.coverage /workspace/output//.devcontainer /workspace/output//.flaskenv /workspace/output//.git /workspace/output//.gitattributes /workspace/output//.github /workspace/output//.gitignore
 [clone : clone] + rm -rf '/workspace/output//..?*'
 [clone : clone] + test -z 
 [clone : clone] + test -z 
 [clone : clone] + test -z 
 [clone : clone] + git config --global --add safe.directory /workspace/output
 [clone : clone] + /ko-app/git-init '-url=https://github.com/Umairkhan603/devops-capstone-project.git' '-revision=main' '-refspec=' '-path=/workspace/output/' '-sslVerify=true' '-submodules=true' '-depth=1' '-sparseCheckoutDirectories='
-[clone : clone] {"level":"info","ts":1761469446.2660275,"caller":"git/git.go:176","msg":"Successfully cloned https://github.com/Umairkhan603/devops-capstone-project.git @ 005a17503ffe2aba53d8cb6881b6669f06a4f673 (grafted, HEAD, origin/main) in path /workspace/output/"}
-[clone : clone] {"level":"info","ts":1761469446.947584,"caller":"git/git.go:215","msg":"Successfully initialized and updated submodules in path /workspace/output/"}
+[clone : clone] {"level":"info","ts":1761466450.4928625,"caller":"git/git.go:176","msg":"Successfully cloned https://github.com/Umairkhan603/devops-capstone-project.git @ 0aefc474c0528c45181672f5f32084f0ec74f9e8 (grafted, HEAD, origin/main) in path /workspace/output/"}
+[clone : clone] {"level":"info","ts":1761466451.1733475,"caller":"git/git.go:215","msg":"Successfully initialized and updated submodules in path /workspace/output/"}
 [clone : clone] + cd /workspace/output/
 [clone : clone] + git rev-parse HEAD
-[clone : clone] + RESULT_SHA=005a17503ffe2aba53d8cb6881b6669f06a4f673
+[clone : clone] + RESULT_SHA=0aefc474c0528c45181672f5f32084f0ec74f9e8
 [clone : clone] + EXIT_CODE=0
 [clone : clone] + '[' 0 '!=' 0 ]
 [clone : clone] + git log -1 '--pretty=%ct'
-[clone : clone] + RESULT_COMMITTER_DATE=1761468256
-[clone : clone] + printf '%s' 1761468256
-[clone : clone] + printf '%s' 005a17503ffe2aba53d8cb6881b6669f06a4f673
+[clone : clone] + RESULT_COMMITTER_DATE=1761465979
+[clone : clone] + printf '%s' 1761465979
+[clone : clone] + printf '%s' 0aefc474c0528c45181672f5f32084f0ec74f9e8
 [clone : clone] + printf '%s' https://github.com/Umairkhan603/devops-capstone-project.git
 
-[lint : flake8] Collecting Flask==2.1.2
-[lint : flake8]   Downloading Flask-2.1.2-py3-none-any.whl (95 kB)
 [lint : flake8] Collecting Werkzeug==2.1.2
 [lint : flake8]   Downloading Werkzeug-2.1.2-py3-none-any.whl (224 kB)
-[lint : flake8] Collecting Flask-SQLAlchemy==2.5.1
-[lint : flake8]   Downloading Flask_SQLAlchemy-2.5.1-py2.py3-none-any.whl (17 kB)
-[lint : flake8] Collecting SQLAlchemy==1.4.46
-[lint : flake8]   Downloading SQLAlchemy-1.4.46.tar.gz (8.5 MB)
-[lint : flake8] Collecting Flask-RESTX==0.5.1
-[lint : flake8]   Downloading flask_restx-0.5.1-py2.py3-none-any.whl (5.3 MB)
-[lint : flake8] Collecting psycopg2-binary==2.9.6
-[lint : flake8]   Downloading psycopg2-binary-2.9.6.tar.gz (384 kB)
-[lint : flake8]     ERROR: Command errored out with exit status 1:
-[lint : flake8]      command: /usr/local/bin/python -c 'import io, os, sys, setuptools, tokenize; sys.argv[0] = '"'"'/tmp/pip-install-7rqb2xl5/psycopg2-binary_f2845ce225534406a5f253942cee360c/setup.py'"'"'; __file__='"'"'/tmp/pip-install-7rqb2xl5/psycopg2-binary_f2845ce225534406a5f253942cee360c/setup.py'"'"';f = getattr(tokenize, '"'"'open'"'"', open)(__file__) if os.path.exists(__file__) else io.StringIO('"'"'from setuptools import setup; setup()'"'"');code = f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();exec(compile(code, __file__, '"'"'exec'"'"'))' egg_info --egg-base /tmp/pip-pip-egg-info-0n4ic2aj
-[lint : flake8]          cwd: /tmp/pip-install-7rqb2xl5/psycopg2-binary_f2845ce225534406a5f253942cee360c/
-[lint : flake8]     Complete output (23 lines):
-[lint : flake8]     running egg_info
-[lint : flake8]     creating /tmp/pip-pip-egg-info-0n4ic2aj/psycopg2_binary.egg-info
-[lint : flake8]     writing /tmp/pip-pip-egg-info-0n4ic2aj/psycopg2_binary.egg-info/PKG-INFO
-[lint : flake8]     writing dependency_links to /tmp/pip-pip-egg-info-0n4ic2aj/psycopg2_binary.egg-info/dependency_links.txt
-[lint : flake8]     writing top-level names to /tmp/pip-pip-egg-info-0n4ic2aj/psycopg2_binary.egg-info/top_level.txt
-[lint : flake8]     writing manifest file '/tmp/pip-pip-egg-info-0n4ic2aj/psycopg2_binary.egg-info/SOURCES.txt'
-[lint : flake8]     
-[lint : flake8]     Error: pg_config executable not found.
-[lint : flake8]     
-[lint : flake8]     pg_config is required to build psycopg2 from source.  Please add the directory
-[lint : flake8]     containing pg_config to the $PATH or specify the full executable path with the
-[lint : flake8]     option:
-[lint : flake8]     
-[lint : flake8]         python setup.py build_ext --pg-config /path/to/pg_config build ...
-[lint : flake8]     
-[lint : flake8]     or with the pg_config option in 'setup.cfg'.
-[lint : flake8]     
-[lint : flake8]     If you prefer to avoid building psycopg2 from source, please install the PyPI
-[lint : flake8]     'psycopg2-binary' package instead.
-[lint : flake8]     
-[lint : flake8]     For further information please check the 'doc/src/install.rst' file (also at
-[lint : flake8]     <https://www.psycopg.org/docs/install.html>).
-[lint : flake8]     
-[lint : flake8]     ----------------------------------------
-[lint : flake8] WARNING: Discarding https://files.pythonhosted.org/packages/98/3e/05ab0922422c91ca0ecb5939a100f8dc2b5d15f5978433beadc87c5329bf/psycopg2-binary-2.9.6.tar.gz#sha256=1f64dcfb8f6e0c014c7f55e51c9759f024f70ea572fbdef123f85318c297947c (from https://pypi.org/simple/psycopg2-binary/) (requires-python:>=3.6). Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.
-[lint : flake8] ERROR: Could not find a version that satisfies the requirement psycopg2-binary==2.9.6 (from versions: 2.7.4, 2.7.5, 2.7.6, 2.7.6.1, 2.7.7, 2.8, 2.8.1, 2.8.2, 2.8.3, 2.8.4, 2.8.5, 2.8.6, 2.9, 2.9.1, 2.9.2, 2.9.3, 2.9.4, 2.9.5, 2.9.6, 2.9.7, 2.9.8, 2.9.9, 2.9.10, 2.9.11)
-[lint : flake8] ERROR: No matching distribution found for psycopg2-binary==2.9.6
+[lint : flake8] ERROR: Could not find a version that satisfies the requirement SQLAlchemy==1.4.46 (from versions: 2.0.0b1, 2.0.0b2, 2.0.0b3, 2.0.0b4, 2.0.0rc1, 2.0.0rc2, 2.0.0rc3, 2.0.0, 2.0.1, 2.0.2, 2.0.3, 2.0.4, 2.0.5, 2.0.5.post1, 2.0.6, 2.0.7, 2.0.8, 2.0.9, 2.0.10, 2.0.11, 2.0.12, 2.0.13, 2.0.14, 2.0.15, 2.0.16, 2.0.17, 2.0.18, 2.0.19, 2.0.20, 2.0.21, 2.0.22, 2.0.23, 2.0.24, 2.0.25, 2.0.26, 2.0.27, 2.0.28, 2.0.29, 2.0.30, 2.0.31, 2.0.32, 2.0.33, 2.0.34, 2.0.35, 2.0.36, 2.0.37, 2.0.38, 2.0.39, 2.0.40, 2.0.41, 2.0.42, 2.0.43, 2.0.44)
+[lint : flake8] ERROR: No matching distribution found for SQLAlchemy==1.4.46
 [lint : flake8] WARNING: You are using pip version 21.1.1; however, version 25.3 is available.
 [lint : flake8] You should consider upgrading via the '/usr/local/bin/python -m pip install --upgrade pip' command.
 
@@ -90,11 +51,11 @@
 [tests : nosetests] Requirement already satisfied: pip in /usr/local/lib/python3.9/site-packages (23.0.1)
 [tests : nosetests] Collecting pip
 [tests : nosetests]   Downloading pip-25.3-py3-none-any.whl (1.8 MB)
-[tests : nosetests]      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 29.3 MB/s eta 0:00:00
+[tests : nosetests]      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 30.6 MB/s eta 0:00:00
 [tests : nosetests] Requirement already satisfied: wheel in /usr/local/lib/python3.9/site-packages (0.44.0)
 [tests : nosetests] Collecting wheel
 [tests : nosetests]   Downloading wheel-0.45.1-py3-none-any.whl (72 kB)
-[tests : nosetests]      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 72.5/72.5 kB 38.4 MB/s eta 0:00:00
+[tests : nosetests]      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 72.5/72.5 kB 43.7 MB/s eta 0:00:00
 [tests : nosetests] Installing collected packages: wheel, pip
 [tests : nosetests]   Attempting uninstall: wheel
 [tests : nosetests]     Found existing installation: wheel 0.44.0
@@ -108,7 +69,58 @@
 [tests : nosetests] WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
 [tests : nosetests] WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 [tests : nosetests] ***** Running nosetests with: -v --with-spec --spec-color *****
-[tests : nosetests] Usage: nosetests [options]
+[tests : nosetests] nose.config: INFO: Ignoring files matching ['^\\.', '^_', '^setup\\.py$']
+[tests : nosetests] nose.plugins.cover: INFO: Coverage report will include only packages: ['service']
 [tests : nosetests] 
-[tests : nosetests] nosetests: error: no such option: --with-spec
+[tests : nosetests] Test Flask CLI Commands
+[tests : nosetests] [1;32m- It should call the db-create command[1;0m
+[tests : nosetests] 
+[tests : nosetests] Test Cases for Account Model
+[tests : nosetests] [1;32m- It should Create an account and add it to the database[1;0m
+[tests : nosetests] [1;32m- It should Create an Account and assert that it exists[1;0m
+[tests : nosetests] [1;32m- It should Delete an account from the database[1;0m
+[tests : nosetests] [1;32m- It should Deserialize an account[1;0m
+[tests : nosetests] [1;32m- It should not Deserialize an account with a KeyError[1;0m
+[tests : nosetests] [1;32m- It should not Deserialize an account with a TypeError[1;0m
+[tests : nosetests] [1;32m- It should Find an Account by name[1;0m
+[tests : nosetests] [1;32m- It should List all Accounts in the database[1;0m
+[tests : nosetests] [1;32m- It should Read an account[1;0m
+[tests : nosetests] [1;32m- It should Serialize an account[1;0m
+[tests : nosetests] [1;32m- It should Update an account[1;0m
+[tests : nosetests] 
+[tests : nosetests] Account Service Tests
+[tests : nosetests] [1;32m- It should not Create Account with invalid data[1;0m
+[tests : nosetests] [1;32m- It should return CORS header[1;0m
+[tests : nosetests] [1;32m- It should Create a new Account[1;0m
+[tests : nosetests] [1;32m- It should Delete an Account[1;0m
+[tests : nosetests] [1;32m- It should return 204 for non-existent delete[1;0m
+[tests : nosetests] [1;32m- It should be healthy[1;0m
+[tests : nosetests] [1;32m- It should return 200_OK on home page[1;0m
+[tests : nosetests] [1;32m- It should return empty list if no accounts[1;0m
+[tests : nosetests] [1;32m- It should List multiple Accounts[1;0m
+[tests : nosetests] [1;32m- It should return 404 for missing Account[1;0m
+[tests : nosetests] [1;32m- It should Read a single Account[1;0m
+[tests : nosetests] [1;32m- It should return security headers[1;0m
+[tests : nosetests] [1;32m- It should reject wrong content type[1;0m
+[tests : nosetests] [1;32m- It should Update an Account[1;0m
+[tests : nosetests] [1;32m- It should return 404 for non-existent update[1;0m
+[tests : nosetests] 
+[tests : nosetests] Name                               Stmts   Miss  Cover
+[tests : nosetests] ------------------------------------------------------
+[tests : nosetests] service/__init__.py                   22      3    86%
+[tests : nosetests] service/common/__init__.py             0      0   100%
+[tests : nosetests] service/common/cli_commands.py         7      0   100%
+[tests : nosetests] service/common/error_handlers.py      32      6    81%
+[tests : nosetests] service/common/log_handlers.py        10      1    90%
+[tests : nosetests] service/common/status.py              46      0   100%
+[tests : nosetests] service/config.py                     11      5    55%
+[tests : nosetests] service/models.py                     70      3    96%
+[tests : nosetests] service/routes.py                     62      0   100%
+[tests : nosetests] ------------------------------------------------------
+[tests : nosetests] TOTAL                                260     18    93%
+[tests : nosetests] ----------------------------------------------------------------------
+[tests : nosetests] Ran 27 tests in 23.601s
+[tests : nosetests] 
+[tests : nosetests] OK
+[tests : nosetests] 
 

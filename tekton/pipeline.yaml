@@ -4,7 +4,9 @@ kind: Pipeline
 metadata:
   name: cd-pipeline
 spec:
-  description: This pipeline clones the repo, lints the code, runs tests, builds an image, deploys to OpenShift, and cleans up.
+  description: >
+    This pipeline clones the repository, lints the code, runs tests,
+    builds an image, deploys to OpenShift, and performs cleanup.
   workspaces:
     - name: pipeline-workspace
   params:
@@ -48,7 +50,7 @@ spec:
         - name: database_uri
           value: "sqlite:///test.db"
         - name: args
-          value: "-v --with-spec --spec-color"
+          value: "-v"
       runAfter:
         - clone
 

@@ -1,17 +1,18 @@
 FROM python:3.9-slim
 
-# Create working folder and install dependencies
+# Set working directory
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application contents
+# Install system dependencies and Python requirements
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
 COPY service/ ./service/
 
-# Switch to a non-root user
+# Create non-root user and set ownership
 RUN useradd --uid 1000 theia && chown -R theia /app
 USER theia
 
-# Run the service
 EXPOSE 8080
 CMD ["gunicorn", "--bind=0.0.0.0:8080", "--log-level=info", "service:app"]

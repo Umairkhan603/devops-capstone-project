@@ -72,7 +72,6 @@ spec:
             workingDir: /workspace/output
             script: |
               set -e
-              pip install --upgrade pip
               pip install --no-cache-dir -r requirements.txt
               coverage run --source=service -m nose
               coverage report --fail-under=95

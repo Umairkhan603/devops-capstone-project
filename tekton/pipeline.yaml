@@ -41,9 +41,9 @@ spec:
             image: python:3.9
             workingDir: /workspace/output
             script: |
+              set -e
               apt-get update && apt-get install -y libpq-dev gcc
               python -m pip install --upgrade pip wheel
-              # Removed nose-spec==0.5 to avoid installation error
               pip install --no-cache-dir -r requirements.txt
 
     # 3️⃣ Lint code
@@ -56,12 +56,12 @@ spec:
             image: python:3.9
             workingDir: /workspace/output
             script: |
-              apt-get update && apt-get install -y libpq-dev gcc
-              python -m pip install --upgrade pip
+              set -e
+              pip install --upgrade pip
               pip install flake8
-              flake8 service || true
+              flake8 service
 
-    # 4️⃣ Run Tests
+    # 4️⃣ Run Tests with Coverage
     - name: tests
       runAfter:
         - install-deps
@@ -71,9 +71,12 @@ spec:
             image: python:3.9
             workingDir: /workspace/output
             script: |
+              set -e
               pip install --upgrade pip
               pip install --no-cache-dir -r requirements.txt
-              nosetests -v --with-coverage --cover-package=service || true
+              coverage run --source=service -m nose
+              coverage report --fail-under=95
+              coverage xml
 
     # 5️⃣ Build Container
     - name: build

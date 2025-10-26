@@ -43,6 +43,7 @@ spec:
             script: |
               apt-get update && apt-get install -y libpq-dev gcc
               python -m pip install --upgrade pip wheel
+              # Removed nose-spec==0.5 to avoid installation error
               pip install --no-cache-dir -r requirements.txt
 
     # 3️⃣ Lint code
@@ -72,7 +73,6 @@ spec:
             script: |
               pip install --upgrade pip
               pip install --no-cache-dir -r requirements.txt
-              # Run tests with coverage (no --with-spec)
               nosetests -v --with-coverage --cover-package=service || true
 
     # 5️⃣ Build Container

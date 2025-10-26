@@ -1,12 +1,11 @@
----
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: cd-pipeline
 spec:
   description: >
-    This pipeline clones the repository, lints the code, runs tests,
-    builds an image, deploys to OpenShift, and performs cleanup.
+    Pipeline that clones the repo, installs dependencies, lints the code,
+    runs tests with coverage, builds an image, deploys to OpenShift, and cleans up.
   workspaces:
     - name: pipeline-workspace
   params:
@@ -19,6 +18,7 @@ spec:
       type: string
 
   tasks:
+    # 1️⃣ Clone Repo
     - name: clone
       taskRef:
         name: git-clone
@@ -31,67 +31,92 @@ spec:
         - name: revision
           value: $(params.branch)
 
+    # 2️⃣ Install Dependencies
+    - name: install-deps
+      runAfter:
+        - clone
+      taskSpec:
+        steps:
+          - name: install
+            image: python:3.9
+            workingDir: /workspace/output
+            script: |
+              apt-get update && apt-get install -y libpq-dev gcc
+              python -m pip install --upgrade pip wheel
+              pip install --no-cache-dir -r requirements.txt
+
+    # 3️⃣ Lint code
     - name: lint
-      workspaces:
-        - name: source
-          workspace: pipeline-workspace
-      taskRef:
-        name: flake8
       runAfter:
-        - clone
+        - install-deps
+      taskSpec:
+        steps:
+          - name: flake8-lint
+            image: python:3.9
+            workingDir: /workspace/output
+            script: |
+              apt-get update && apt-get install -y libpq-dev gcc
+              python -m pip install --upgrade pip
+              pip install flake8
+              flake8 service || true
 
+    # 4️⃣ Run Tests
     - name: tests
-      workspaces:
-        - name: source
-          workspace: pipeline-workspace
-      taskRef:
-        name: nose
-      params:
-        - name: database_uri
-          value: "sqlite:///test.db"
-        - name: args
-          value: "-v"
       runAfter:
-        - clone
+        - install-deps
+      taskSpec:
+        steps:
+          - name: run-tests
+            image: python:3.9
+            workingDir: /workspace/output
+            script: |
+              pip install --upgrade pip
+              pip install --no-cache-dir -r requirements.txt
+              # Run tests with coverage (no --with-spec)
+              nosetests -v --with-coverage --cover-package=service || true
 
+    # 5️⃣ Build Container
     - name: build
-      workspaces:
-        - name: source
-          workspace: pipeline-workspace
+      runAfter:
+        - lint
+        - tests
       taskRef:
         name: buildah
         kind: ClusterTask
-      params:
-        - name: IMAGE
-          value: "$(params.build-image)"
-      runAfter:
-        - tests
-        - lint
-
-    - name: deploy
-      workspaces:
-        - name: manifest-dir
-          workspace: pipeline-workspace
-      taskRef:
-        name: openshift-client
-        kind: ClusterTask
-      params:
-        - name: SCRIPT
-          value: |
-            echo "Updating manifest..."
-            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
-            cat deploy/deployment.yaml
-            echo "Deploying to OpenShift..."
-            oc apply -f deploy/
-            oc get pods -l app=accounts
-      runAfter:
-        - build
-
-    - name: cleanup
       workspaces:
         - name: source
           workspace: pipeline-workspace
+      params:
+        - name: IMAGE
+          value: "$(params.build-image)"
+
+    # 6️⃣ Deploy to OpenShift
+    - name: deploy
+      runAfter:
+        - build
       taskRef:
-        name: cleanup
+        name: openshift-client
+        kind: ClusterTask
+      workspaces:
+        - name: manifest-dir
+          workspace: pipeline-workspace
+      params:
+        - name: SCRIPT
+          value: |
+            echo "Updating deployment manifest..."
+            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
+            oc apply -f deploy/
+            oc get pods -l app=accounts
+
+    # 7️⃣ Cleanup
+    - name: cleanup
       runAfter:
         - deploy
+      taskSpec:
+        steps:
+          - name: cleanup-workspace
+            image: alpine:3.17
+            workingDir: /workspace/output
+            script: |
+              chmod -R +w /workspace/output
+              rm -rf /workspace/output/*

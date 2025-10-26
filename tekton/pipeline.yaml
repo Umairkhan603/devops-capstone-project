@@ -4,7 +4,7 @@ kind: Pipeline
 metadata:
   name: cd-pipeline
 spec:
-  description: This pipeline clones the repo, lints the code, runs tests, and cleans up.
+  description: This pipeline clones the repo, lints the code, runs tests, builds an image, and cleans up.
   workspaces:
     - name: pipeline-workspace
   params:
@@ -12,6 +12,10 @@ spec:
       type: string
     - name: branch
       type: string
+      default: main
+    - name: build-image
+      type: string
+
   tasks:
     - name: clone
       taskRef:
@@ -48,6 +52,20 @@ spec:
       runAfter:
         - clone
 
+    - name: build
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: "$(params.build-image)"
+      runAfter:
+        - tests
+        - lint
+
     - name: cleanup
       workspaces:
         - name: source
@@ -55,5 +73,4 @@ spec:
       taskRef:
         name: cleanup
       runAfter:
-        - lint
-        - tests
+        - build

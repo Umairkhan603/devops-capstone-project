@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/Umairkhan603/devops-capstone-project/actions/workflows/ci-build.yaml/badge.svg)
 
-This repository contains the DevOps Capstone Project demonstrating CI/CD pipeline automation with GitHub Actions, Docker, and PostgreSQL.
+This repository contains the DevOps Capstone Project demonstrating CI/CD pipeline automation with GitHub Actions, Docker, and PostgreSQL. 
 
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 

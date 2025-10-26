@@ -4,7 +4,7 @@ kind: Pipeline
 metadata:
   name: cd-pipeline
 spec:
-  description: This pipeline clones the repo, lints the code, runs tests, builds an image, and cleans up.
+  description: This pipeline clones the repo, lints the code, runs tests, builds an image, deploys to OpenShift, and cleans up.
   workspaces:
     - name: pipeline-workspace
   params:
@@ -66,6 +66,25 @@ spec:
         - tests
         - lint
 
+    - name: deploy
+      workspaces:
+        - name: manifest-dir
+          workspace: pipeline-workspace
+      taskRef:
+        name: openshift-client
+        kind: ClusterTask
+      params:
+        - name: SCRIPT
+          value: |
+            echo "Updating manifest..."
+            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
+            cat deploy/deployment.yaml
+            echo "Deploying to OpenShift..."
+            oc apply -f deploy/
+            oc get pods -l app=accounts
+      runAfter:
+        - build
+
     - name: cleanup
       workspaces:
         - name: source
@@ -73,4 +92,4 @@ spec:
       taskRef:
         name: cleanup
       runAfter:
-        - build
+        - deploy
